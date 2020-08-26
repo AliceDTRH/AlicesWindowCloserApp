@@ -11,13 +11,18 @@ using System.Runtime.InteropServices;
 
 namespace Alice_s_Window_Closer_App
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1118:Utility classes should not have public constructors", Justification = "I'm afraid I can't do that, Dave")]
+
     internal class Program
     {
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetConsoleWindow();
 
         private static bool force = false;
+
+        private Program()
+        {
+            //Resolves S1118:Utility classes should not have public constructors
+        }
 
         static void Main(string[] args)
         {
@@ -31,6 +36,7 @@ namespace Alice_s_Window_Closer_App
                     default:
                         Console.Out.WriteLine("Alice's Window Closer App v1.0");
                         Console.Out.WriteLine("--force  Kill any processes that have an open window. (Dangerous!)");
+                        Console.Out.WriteLine("--help   Show help flags");
                         break;
                 }
             }
@@ -44,7 +50,8 @@ namespace Alice_s_Window_Closer_App
                 item.Quit();
             }
 
-            taskBarProcesses.ForEach((task) => {
+            taskBarProcesses.ForEach((task) =>
+            {
 
 #if DEBUG
                 if (task.ProcessName == "devenv")
@@ -58,7 +65,8 @@ namespace Alice_s_Window_Closer_App
                 {
                     task.CloseMainWindow();
                 }
-                catch (InvalidOperationException e) {
+                catch (InvalidOperationException e)
+                {
                     Console.Error.WriteLine($"Something went wrong trying to close {task.ProcessName}: {e.Message}");
                 }
                 if (force)
@@ -73,7 +81,7 @@ namespace Alice_s_Window_Closer_App
                     {
                         Console.Error.WriteLine($"Something went wrong trying to kill {task.ProcessName}: {e.Message}");
                     }
-                    
+
                 }
 
             });
