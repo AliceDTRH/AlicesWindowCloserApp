@@ -118,6 +118,7 @@
   </Target>
   <Import Project="..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.targets" Condition="Exists('..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>certutil -hashfile "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>certutil -hashfile "$(TargetPath)" &gt; hash
+certutil -hashfile "$(TargetDir)$(SolutionName).pdb" &gt;&gt; hash</PostBuildEvent>
   </PropertyGroup>
 </Project>
