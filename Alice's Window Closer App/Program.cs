@@ -6,6 +6,7 @@ using SHDocVw;
 using System.Threading;
 using System.Runtime.InteropServices;
 using Win32Interop.WinHandles;
+using System.Reflection;
 
 //Icon source: https://publicdomainvectors.org/en/free-clipart/White-cross-within-a-red-octagon-vector-image/17388.html
 
@@ -25,6 +26,8 @@ namespace Alice_s_Window_Closer_App
         private const int WM_Close = 16;
         private static bool force;
 
+        private static readonly Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
         private Program()
         {
             //Resolves S1118:Utility classes should not have public constructors
@@ -40,10 +43,16 @@ namespace Alice_s_Window_Closer_App
                         force = true;
                         break;
 
+                    case "--version":
+                        Console.Out.WriteLine($"Alice's Window Closer App v{version}");
+                        Environment.Exit(0); //We close because we were only showing the version.
+                        break;
+
                     default:
-                        Console.Out.WriteLine("Alice's Window Closer App v1.0");
+                        Console.Out.WriteLine($"Alice's Window Closer App v{version.Major}.{version.MajorRevision}");
                         Console.Out.WriteLine("--force  Kill any processes that have an open window. (Dangerous!)");
                         Console.Out.WriteLine("--help   Show help flags");
+                        Environment.Exit(0); //We close because we were only showing the help.
                         break;
                 }
             }
