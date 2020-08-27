@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Alice_s_Window_Closer_App
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         private const int WM_Close = 16;
-        private static bool force = false;
+        private static bool force;
 
         private Program()
         {

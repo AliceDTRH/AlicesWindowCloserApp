@@ -2,7 +2,7 @@
 A simple program that closes all active windows
 
 ## Command line flags
-```
+```ShellSession
 --force  Kill any processes that have an open window. (Dangerous!)
 --help   Show help flags
 ```
