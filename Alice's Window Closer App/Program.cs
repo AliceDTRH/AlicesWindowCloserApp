@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Alice_s_Window_Closer_App
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetConsoleWindow();
 
-        private static bool force = false;
+        private static bool force;
 
         private Program()
         {
