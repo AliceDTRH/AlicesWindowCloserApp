@@ -5,7 +5,7 @@ using System.Linq;
 using SHDocVw;
 using System.Threading;
 using System.Runtime.InteropServices;
-
+using Win32Interop.WinHandles;
 //Icon source: https://publicdomainvectors.org/en/free-clipart/White-cross-within-a-red-octagon-vector-image/17388.html
 
 
@@ -17,6 +17,13 @@ namespace Alice_s_Window_Closer_App
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetConsoleWindow();
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern int PostMessage(int hWnd, int msg, int wParam, int lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        private const int WM_Close = 16;
         private static bool force = false;
 
         private Program()
@@ -63,7 +70,8 @@ namespace Alice_s_Window_Closer_App
 
                 try
                 {
-                    task.CloseMainWindow();
+                    TopLevelWindowUtils.FindWindows((wh) => IsWindowHandleOwnedBy(wh, task)).ToList()
+                    .ForEach((wh) => PostMessage(wh.RawPtr.ToInt32(), WM_Close, 0, 0));
                 }
                 catch (InvalidOperationException e)
                 {
@@ -75,7 +83,8 @@ namespace Alice_s_Window_Closer_App
                     Console.Out.WriteLine($"Killing {task.ProcessName}");
                     try
                     {
-                        if (task.HasExited) { task.Kill(); }
+                        task.Refresh();
+                        if (!task.HasExited) { task.Kill(); }
                     }
                     catch (InvalidOperationException e)
                     {
@@ -88,6 +97,17 @@ namespace Alice_s_Window_Closer_App
 
 
 
+        }
+
+        private static bool IsWindowHandleOwnedBy(WindowHandle wh, Process task)
+        {
+            if (!wh.IsValid || !wh.IsVisible()) { return false; }
+            GetWindowThreadProcessId(wh.RawPtr, out uint pid);
+            if (task.Id.Equals(pid))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
