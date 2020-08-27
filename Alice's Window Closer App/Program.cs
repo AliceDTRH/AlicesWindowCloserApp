@@ -49,7 +49,7 @@ namespace Alice_s_Window_Closer_App
                         break;
 
                     default:
-                        Console.Out.WriteLine($"Alice's Window Closer App v{version.Major}.{version.MajorRevision}");
+                        Console.Out.WriteLine($"Alice's Window Closer App v{version.Major}.{version.Minor}");
                         Console.Out.WriteLine("--force  Kill any processes that have an open window. (Dangerous!)");
                         Console.Out.WriteLine("--help   Show help flags");
                         Environment.Exit(0); //We close because we were only showing the help.
