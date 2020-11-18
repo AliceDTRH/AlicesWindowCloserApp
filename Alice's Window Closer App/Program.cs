@@ -96,7 +96,7 @@ namespace Alice_s_Window_Closer_App
                     string errorMessage = new Win32Exception(LastError).Message;
                     if (LastError != 0)
                     {
-                        Console.WriteLine($"Failed to close {task.MainWindowTitle}: {errorMessage}");
+                        Console.Error.WriteLine($"Failed to close {task.MainWindowTitle}: {errorMessage}");
                     }
                 });
 
