@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using Win32Interop.WinHandles;
 using System.Reflection;
 
+using System.ComponentModel;
+
 //Icon source: https://publicdomainvectors.org/en/free-clipart/White-cross-within-a-red-octagon-vector-image/17388.html
 
 namespace Alice_s_Window_Closer_App
@@ -22,6 +24,9 @@ namespace Alice_s_Window_Closer_App
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern uint GetLastError();
 
         private const int WM_Close = 16;
         private static bool force;
@@ -87,6 +92,12 @@ namespace Alice_s_Window_Closer_App
                 {
                     Console.Out.WriteLine($"Closing {task.ProcessName}");
                     PostMessage(wh.RawPtr.ToInt32(), WM_Close, 0, 0);
+                    int LastError = int.Parse(GetLastError().ToString()); //TODO: Find *working* alternative for GetLastError.
+                    string errorMessage = new Win32Exception(LastError).Message;
+                    if (LastError != 0)
+                    {
+                        Console.WriteLine($"Failed to close {task.MainWindowTitle}: {errorMessage}");
+                    }
                 });
 
                 if (force)
