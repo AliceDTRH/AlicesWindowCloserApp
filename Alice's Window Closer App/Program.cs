@@ -63,7 +63,14 @@ namespace Alice_s_Window_Closer_App
 
             foreach (InternetExplorer item in shellWindows)
             {
-                item.Quit();
+                try
+                {
+                    item.Quit();
+                }
+                catch (System.Runtime.InteropServices.COMException e)
+                {
+                    Console.Error.WriteLine("Error trying to close " + item.FullName + ", Reason: " + e.Message);
+                }
             }
 
             taskBarProcesses.ForEach((task) =>
