@@ -19,14 +19,11 @@ namespace Alice_s_Window_Closer_App
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetConsoleWindow();
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int PostMessage(int hWnd, int msg, int wParam, int lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern uint GetLastError();
 
         private const int WM_Close = 16;
         private static bool force;
@@ -92,7 +89,8 @@ namespace Alice_s_Window_Closer_App
                 {
                     Console.Out.WriteLine($"Closing {task.ProcessName}");
                     PostMessage(wh.RawPtr.ToInt32(), WM_Close, 0, 0);
-                    int LastError = int.Parse(GetLastError().ToString()); //TODO: Find *working* alternative for GetLastError.
+
+                    int LastError = Marshal.GetLastWin32Error();
                     string errorMessage = new Win32Exception(LastError).Message;
                     if (LastError != 0)
                     {
